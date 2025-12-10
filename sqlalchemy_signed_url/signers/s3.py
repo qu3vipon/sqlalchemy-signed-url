@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Annotated, Any
+
 import boto3
 
 
@@ -7,12 +9,12 @@ class S3PresignedURLSigner:
     def __init__(
         self,
         *,
-        region_name: str,
         bucket: str,
+        region_name: Annotated[str | None,"Used ONLY when client is not provided. Ignored if client is given."],
+        client: Annotated[Any, "Preconfigured boto3 S3 client. If provided, region_name is ignored."] = None,
     ):
-        self._region_name = region_name
         self._bucket = bucket
-        self._client = boto3.client("s3", region_name=region_name)
+        self._client = client or boto3.client("s3", region_name=region_name)
 
     @property
     def bucket(self) -> str:

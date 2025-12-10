@@ -95,6 +95,7 @@ user.profile_image_signed_url
 - [x] Instance-level caching of presigned URLs
   - [x] Cache per ORM instance
   - [x] Invalidate cache when `<field>_key` changes
+- [x] Allow injecting storage client
 
 ### 🚧 Planned
 - [ ] Support additional storage providers
@@ -106,9 +107,6 @@ user.profile_image_signed_url
   - [ ] Generate upload URLs (e.g. `PUT`, `POST`)
   - [ ] Separate read/write URL configuration
   - [ ] Optional constraints (content-type, max size, etc.)
-
-- [ ] Allow injecting storage client
-  - [ ] Support custom client injection for signers
 
 - [ ] Validate Alembic compatibility
   - [ ] Confirm autogenerate behavior with `SignedURLField`
