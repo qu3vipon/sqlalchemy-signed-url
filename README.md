@@ -35,8 +35,16 @@ Over time, this makes consistency and maintenance difficult.
 from sqlalchemy_signed_url import ObjectStorage
 from sqlalchemy_signed_url.signers.s3 import S3PresignedURLSigner
 
+
+# Let the signer create its own boto3 client
 ObjectStorage.initialize(
     signer=S3PresignedURLSigner(bucket="my-bucket", region_name="us-east-1"),
+)
+
+# If you already have a preconfigured boto3 S3 client,
+# the signer will use it as-is and ignore region_name.
+ObjectStorage.initialize(
+    signer=S3PresignedURLSigner(bucket="my-bucket", client=preconfigured_client)
 )
 ```
 ### 2. Declare a model
