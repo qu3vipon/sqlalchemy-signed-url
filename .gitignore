@@ -1,0 +1,22 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info/
+.pytest_cache/
+.tox/
+
+# Virtual environments
+.venv/
+
+# Tool caches
+.ruff_cache/
+
+# uv
+.uv/
+.uv-python/
+
+# OS
+.DS_Store

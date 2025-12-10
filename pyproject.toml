@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=65"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sqlalchemy-signed-url"
+version = "0.1.0"
+description = "SQLAlchemy field for signed URLs from private object storage"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "SQLAlchemy>=1.4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "tox",
+    "ruff",
+]
+
+[tool.setuptools]
+packages = ["sqlalchemy_signed_url"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+exclude = [
+    ".tox",
+    ".venv",
+    "dist",
+    "build",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
