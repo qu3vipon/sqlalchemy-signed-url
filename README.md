@@ -107,3 +107,9 @@ user.profile_image_signed_url
   - [ ] Generate upload URLs (e.g. `PUT`, `POST`)
   - [ ] Separate read/write URL configuration
   - [ ] Optional constraints (content-type, max size, etc.)
+
+- [ ] Allow injecting storage client
+  - [ ] Support custom client injection for signers
+
+- [ ] Validate Alembic compatibility
+  - [ ] Confirm autogenerate behavior with `SignedURLField`
