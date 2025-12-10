@@ -18,6 +18,9 @@ dev = [
     "tox",
     "ruff",
 ]
+s3 = [
+    "boto3>=1.28",
+]
 
 [tool.setuptools]
 packages = ["sqlalchemy_signed_url"]
