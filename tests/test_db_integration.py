@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
 
-from sqlalchemy_signed_url import SignedURLField, StorageConfig
+from sqlalchemy_signed_url import ObjectStorage, SignedURLField
 
 
 class Base(DeclarativeBase):
@@ -16,7 +16,7 @@ class User(Base):
 
 
 def test_db_integration_round_trip(mock_signer):
-    StorageConfig.configure(storage_name="my-bucket", signer=mock_signer)
+    ObjectStorage.initialize(signer=mock_signer)
 
     engine = create_engine("sqlite:///:memory:")
     Base.metadata.create_all(engine)

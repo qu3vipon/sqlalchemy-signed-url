@@ -32,12 +32,11 @@ Over time, this makes consistency and maintenance difficult.
 
 ### 1. Configure storage (once)
 ```python
-from sqlalchemy_signed_url import StorageConfig
+from sqlalchemy_signed_url import ObjectStorage
 from sqlalchemy_signed_url.signers.s3 import S3PresignedURLSigner
 
-StorageConfig.configure(
-    storage_name="my-bucket",
-    signer=S3PresignedURLSigner(region_name="us-east-1"),
+ObjectStorage.initialize(
+    signer=S3PresignedURLSigner(bucket="my-bucket", region_name="us-east-1"),
 )
 ```
 ### 2. Declare a model

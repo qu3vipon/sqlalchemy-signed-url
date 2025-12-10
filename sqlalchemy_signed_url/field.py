@@ -6,7 +6,7 @@ from sqlalchemy import String
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import mapped_column
 
-from .config import StorageConfig
+from .storage import ObjectStorage
 
 
 class SignedURLField:
@@ -56,7 +56,7 @@ class SignedURLField:
             else:
                 object_path = key
 
-            return StorageConfig.build_uri(object_path)
+            return ObjectStorage.build_uri(key=object_path)
 
         def _extract_key_from_uri(uri: str | None) -> str | None:
             if uri is None:
@@ -126,10 +126,7 @@ class SignedURLField:
             if full_uri is None:
                 return None
 
-            bucket, key = StorageConfig.parse_uri(full_uri)
-            signer = StorageConfig.get_signer()
-            signed = signer.generate(bucket=bucket, key=key, ttl=self.ttl)
-
+            signed = ObjectStorage.sign(uri=full_uri, ttl=self.ttl)
             setattr(obj, signed_url_cache_attr, signed)
             return signed
 
@@ -142,7 +139,7 @@ class SignedURLField:
             if full_uri is None:
                 return None
 
-            bucket, key = StorageConfig.parse_uri(full_uri)
+            bucket, key = ObjectStorage.parse_uri(uri=full_uri)
             return bucket, key
 
         setattr(owner, f"{name}_location", _location)

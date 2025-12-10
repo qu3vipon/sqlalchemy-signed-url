@@ -1,34 +1,45 @@
 from __future__ import annotations
 
-import re
-from typing import Optional
-
 import boto3
 
 
 class S3PresignedURLSigner:
-    """
-    Boto3-based S3 presigned URL signer.
-    """
-
     def __init__(
         self,
         *,
-        region_name: Optional[str] = None,
-        client_kwargs: Optional[dict] = None,
+        region_name: str,
+        bucket: str,
     ):
-        self._client = boto3.client(
-            "s3",
-            region_name=region_name,
-            **(client_kwargs or {}),
-        )
+        self._region_name = region_name
+        self._bucket = bucket
+        self._client = boto3.client("s3", region_name=region_name)
 
+    @property
+    def bucket(self) -> str:
+        return self._bucket
+
+    @property
     def scheme(self) -> str:
         return "s3"
 
-    def generate(self, *, bucket: str, key: str, ttl: int) -> str:
+    def sign(self, *, bucket: str, key: str, ttl: int) -> str:
+        """
+        Generate a presigned URL for reading an object.
+
+        Args:
+            bucket: The S3 bucket name.
+            key: object key in the bucket
+            ttl: expiration in seconds
+
+        Returns:
+            str: fully signed URL
+        """
+
         return self._client.generate_presigned_url(
-            ClientMethod="get_object",
-            Params={"Bucket": bucket, "Key": key},
+            "get_object",
+            Params={
+                "Bucket": bucket,
+                "Key": key,
+            },
             ExpiresIn=ttl,
         )

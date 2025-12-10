@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
-from sqlalchemy_signed_url import SignedURLField, StorageConfig
+from sqlalchemy_signed_url import ObjectStorage, SignedURLField
 
 
 class Base(DeclarativeBase):
@@ -16,7 +16,7 @@ class User(Base):
 
 
 def test_storage_config_and_field_behavior(mock_signer):
-    StorageConfig.configure(storage_name="my-bucket", signer=mock_signer)
+    ObjectStorage.initialize(signer=mock_signer)
 
     u = User(profile_image_key="abc.png")
     assert u.profile_image == "mock://my-bucket/users/profile/abc.png"
@@ -30,11 +30,11 @@ def test_storage_config_and_field_behavior(mock_signer):
 
     signed = u.profile_image_signed_url
     assert signed == "signed://my-bucket/users/profile/abc.png?ttl=600"
-    assert mock_signer.calls == [('my-bucket', 'users/profile/abc.png', 600)]
+    assert mock_signer.calls == [("my-bucket", "users/profile/abc.png", 600)]
 
 
 def test_signed_url_is_cached(mock_signer):
-    StorageConfig.configure(storage_name="my-bucket", signer=mock_signer)
+    ObjectStorage.initialize(signer=mock_signer)
 
     u = User(profile_image_key="abc.png")
 
@@ -46,7 +46,7 @@ def test_signed_url_is_cached(mock_signer):
 
 
 def test_signed_url_cache_invalidated_on_key_change(mock_signer):
-    StorageConfig.configure(storage_name="my-bucket", signer=mock_signer)
+    ObjectStorage.initialize(signer=mock_signer)
 
     u = User(profile_image_key="a.png")
     url1 = u.profile_image_signed_url
@@ -62,7 +62,7 @@ def test_signed_url_cache_invalidated_on_key_change(mock_signer):
 
 
 def test_base_path_join(mock_signer):
-    StorageConfig.configure(storage_name="my-bucket/", signer=mock_signer)
+    ObjectStorage.initialize(signer=mock_signer)
 
     u = User(profile_image_key="abc.png")
 
@@ -76,14 +76,14 @@ def test_empty_base_path(mock_signer):
         id: Mapped[int] = mapped_column(primary_key=True)
         image = SignedURLField()
 
-    StorageConfig.configure(storage_name="my-bucket", signer=mock_signer)
+    ObjectStorage.initialize(signer=mock_signer)
 
     u = User2(image_key="a.png")
     assert u.image == "mock://my-bucket/a.png"
 
 
 def test_none_key_clears_value_and_signed_url(mock_signer):
-    StorageConfig.configure(storage_name="my-bucket", signer=mock_signer)
+    ObjectStorage.initialize(signer=mock_signer)
 
     u = User(profile_image_key="a.png")
     _ = u.profile_image_signed_url
@@ -102,7 +102,7 @@ def test_multiple_fields_are_independent(mock_signer):
         img1 = SignedURLField(base_path="a")
         img2 = SignedURLField(base_path="b")
 
-    StorageConfig.configure(storage_name="my-bucket", signer=mock_signer)
+    ObjectStorage.initialize(signer=mock_signer)
 
     u = User3()
     u.img1_key = "x.png"
@@ -111,8 +111,9 @@ def test_multiple_fields_are_independent(mock_signer):
     assert u.img1 == "mock://my-bucket/a/x.png"
     assert u.img2 == "mock://my-bucket/b/y.png"
 
+
 def test_location_property(mock_signer):
-    StorageConfig.configure(storage_name="my-bucket", signer=mock_signer)
+    ObjectStorage.initialize(signer=mock_signer)
 
     u = User(profile_image_key="avatar.png")
 
@@ -121,10 +122,11 @@ def test_location_property(mock_signer):
 
 
 def test_location_is_none_when_key_is_missing(mock_signer):
-    StorageConfig.configure(storage_name="my-bucket", signer=mock_signer)
+    ObjectStorage.initialize(signer=mock_signer)
 
     u = User()
     assert u.profile_image_location is None
+
 
 def test_invalid_key():
     u = User()
